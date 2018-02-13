@@ -1,5 +1,5 @@
 image:
-  repository: n-marton/sese
+  repository: nmarton/sese
   tag: latest
   pullPolicy: Always
 ServiceAccount: sese
