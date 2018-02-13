@@ -1,7 +1,11 @@
 image:
-  repository: nginx
+  repository: n-marton/sese
   tag: latest
   pullPolicy: Always
 ServiceAccount: sese
 Binding: sese
 ClusterRole: sese
+resources:
+  requests:
+    memory: "250Mi"
+    cpu: "150m"
