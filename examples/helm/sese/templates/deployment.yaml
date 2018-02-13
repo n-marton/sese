@@ -19,13 +19,13 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-        volumeMounts:
-        - mountPath: /app/config.yaml
-          subPath: config.yaml
-          name: sese-config
+          volumeMounts:
+          - mountPath: /app/config.yaml
+            subPath: config.yaml
+            name: sese-config
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
       volumes:
       - name: sese-config
         configMap:
           name: sese-config
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
