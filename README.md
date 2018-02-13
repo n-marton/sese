@@ -1,5 +1,7 @@
 # Secret Secretary
 
+Thanks for the help and name for: https://github.com/bonifaido
+
 Project goal is to make secret distribution between namespaces in kubernetes.
 
 Use cases:
