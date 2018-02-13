@@ -27,3 +27,5 @@ spec:
       - name: sese-config
         configMap:
           name: sese-config
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
