@@ -226,7 +226,7 @@ func handleSecrets() {
 func main() {
 	cycle := os.Getenv("CYCLE")
 	if cycle == "" {
-		cycle = "30"
+		cycle = "300"
 	}
 	cycleint, err := strconv.Atoi(cycle)
 	if err != nil {
