@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "sese.fullname" . }}
+  labels:
+    app: {{ template "sese.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "sese.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccount: {{ .Values.ServiceAccount }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - mountPath: /app/config.yaml
+          subPath: config.yaml
+          name: sese-config
+      volumes:
+      - name: sese-config
+        configMap:
+          name: sese-config

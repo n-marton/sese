@@ -1,0 +1,15 @@
+secrets:
+  - sourcesecret: asd
+    sourcenamespace: default
+    targetnamespaces:
+      - test1
+      - test2
+      - test3
+  - sourcenamespace: test3
+    sourcesecret: yolo
+    targetnamespaces:
+      - test1
+      - default
+  - sourcenamespace: test1
+    sourcesecret: yolo
+    targetnamespaces:

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sese-config
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+data:
+{{ (tpl (.Files.Glob "files/config.yaml" ).AsConfig .) | indent 2 }}
