@@ -134,7 +134,7 @@ func createSecret(namespace string, secret *v1.Secret, prefix string) {
 	if err != nil {
 		log.Fatalf("There is an error while creating: " + namespace + "/" + prefix + secret.Name + "\n Error: " + err.Error())
 	} else {
-		log.Printf("Creating of : " + namespace + "/" + prefix + secret.Name + "has finished")
+		log.Printf("Creating of: " + namespace + "/" + prefix + secret.Name + " has finished")
 	}
 }
 
@@ -164,7 +164,7 @@ func updateSecret(namespace string, secret *v1.Secret, prefix string) {
 	if err != nil {
 		log.Fatalf("There is an error while updating: " + namespace + "/" + prefix + secret.Name + "\n Error: " + err.Error())
 	} else {
-		log.Printf("Updating of : " + namespace + "/" + prefix + secret.Name + "has finished")
+		log.Printf("Updating of: " + namespace + "/" + prefix + secret.Name + " has finished")
 	}
 }
 
