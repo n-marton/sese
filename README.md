@@ -13,3 +13,4 @@ How to:
   - There is an example helm chat under examples
   - If you leave empty `targetnamespaces` value, then it will copy secrets to all namespaces
   - You can modify the 300 sec default cycle time by adding CYCLE environment variable of your choosing
+  - If you use targetprefix, then the synchronized secret name will be concated from the prefix and original

@@ -7,6 +7,7 @@ secrets:
       - test3
   - sourcenamespace: test3
     sourcesecret: yolo
+    targetprefix: synced-
     targetnamespaces:
       - test1
       - default
