@@ -24,6 +24,7 @@ type Secrets struct {
 type SecretToSync struct {
 	Sourcesecret     string
 	Sourcenamespace  string
+	Targetprefix     string
 	Targetnamespaces []string
 }
 
@@ -107,11 +108,11 @@ func checkSecretExistance(namespace string, name string) bool {
 
 }
 
-func createSecret(namespace string, secret *v1.Secret) {
+func createSecret(namespace string, secret *v1.Secret, prefix string) {
 	log.Printf("Trying to create: " + namespace + "/" + secret.Name)
 	var rawSecret v1.Secret
 	rawSecret.Namespace = namespace
-	rawSecret.Name = secret.Name
+	rawSecret.Name = prefix + secret.Name
 	rawSecret.Data = secret.Data
 	rawSecret.Type = secret.Type
 	rawSecret.TypeMeta = secret.TypeMeta
@@ -131,17 +132,17 @@ func createSecret(namespace string, secret *v1.Secret) {
 	}
 	_, err = clientset.CoreV1().Secrets(namespace).Create(newSecret)
 	if err != nil {
-		log.Fatalf("There is an error while creating: " + namespace + "/" + secret.Name + "\n Error: " + err.Error())
+		log.Fatalf("There is an error while creating: " + namespace + "/" + prefix + secret.Name + "\n Error: " + err.Error())
 	} else {
-		log.Printf("Creating of : " + namespace + "/" + secret.Name + "has finished")
+		log.Printf("Creating of : " + namespace + "/" + prefix + secret.Name + "has finished")
 	}
 }
 
-func updateSecret(namespace string, secret *v1.Secret) {
+func updateSecret(namespace string, secret *v1.Secret, prefix string) {
 	log.Printf("Trying to update: " + namespace + "/" + secret.Name)
 	var rawSecret v1.Secret
 	rawSecret.Namespace = namespace
-	rawSecret.Name = secret.Name
+	rawSecret.Name = prefix + secret.Name
 	rawSecret.Data = secret.Data
 	rawSecret.Type = secret.Type
 	rawSecret.TypeMeta = secret.TypeMeta
@@ -161,9 +162,9 @@ func updateSecret(namespace string, secret *v1.Secret) {
 	}
 	_, err = clientset.CoreV1().Secrets(namespace).Update(newSecret)
 	if err != nil {
-		log.Fatalf("There is an error while updating: " + namespace + "/" + secret.Name + "\n Error: " + err.Error())
+		log.Fatalf("There is an error while updating: " + namespace + "/" + prefix + secret.Name + "\n Error: " + err.Error())
 	} else {
-		log.Printf("Updating of : " + namespace + "/" + secret.Name + "has finished")
+		log.Printf("Updating of : " + namespace + "/" + prefix + secret.Name + "has finished")
 	}
 }
 
@@ -183,34 +184,34 @@ func handleSecrets() {
 					if sync.Sourcenamespace == target {
 						log.Printf("Skipping source namespace: " + sync.Sourcenamespace)
 					} else {
-						checktargetexistance := checkSecretExistance(target, sync.Sourcesecret)
+						checktargetexistance := checkSecretExistance(target, sync.Targetprefix+sync.Sourcesecret)
 						if !checktargetexistance {
-							createSecret(target, sourceSecret)
+							createSecret(target, sourceSecret, sync.Targetprefix)
 						} else {
-							targetSecretCheck := getSecret(target, sync.Sourcesecret)
+							targetSecretCheck := getSecret(target, sync.Targetprefix+sync.Sourcesecret)
 							if !reflect.DeepEqual(sourceSecret.Data, targetSecretCheck.Data) || !reflect.DeepEqual(sourceSecret.Labels, targetSecretCheck.Labels) || !reflect.DeepEqual(sourceSecret.Annotations, targetSecretCheck.Annotations) {
-								updateSecret(target, sourceSecret)
+								updateSecret(target, sourceSecret, sync.Targetprefix)
 							} else {
-								log.Printf("Sync is fine for: " + target + "/" + sync.Sourcesecret)
+								log.Printf("Sync is fine for: " + target + "/" + sync.Targetprefix + sync.Sourcesecret)
 							}
 						}
 					}
 				}
 			} else {
 				for _, target := range sync.Targetnamespaces {
-					checktargetexistance := checkSecretExistance(target, sync.Sourcesecret)
+					checktargetexistance := checkSecretExistance(target, sync.Targetprefix+sync.Sourcesecret)
 					if !checktargetexistance {
 						inarray := inArray(nsList, target)
 						if inarray {
-							createSecret(target, sourceSecret)
+							createSecret(target, sourceSecret, sync.Targetprefix)
 						} else {
 							log.Printf("Skipping namespace: " + target + " it doesn't exist")
 						}
 
 					} else {
-						targetSecretCheck := getSecret(target, sync.Sourcesecret)
+						targetSecretCheck := getSecret(target, sync.Targetprefix+sync.Sourcesecret)
 						if !reflect.DeepEqual(sourceSecret.Data, targetSecretCheck.Data) || !reflect.DeepEqual(sourceSecret.Labels, targetSecretCheck.Labels) || !reflect.DeepEqual(sourceSecret.Annotations, targetSecretCheck.Annotations) {
-							updateSecret(target, sourceSecret)
+							updateSecret(target, sourceSecret, sync.Targetprefix)
 						} else {
 							log.Printf("Sync is fine for: " + target + "/" + sync.Sourcesecret)
 						}
